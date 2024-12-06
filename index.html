@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Stop Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f8f8;
+        }
+
+        .card {
+            background: white;
+            width: 600px;
+            border: 2px solid black;
+            padding: 20px;
+            border-radius: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .card-header img {
+            width: 100px;
+        }
+
+        .card h1 {
+            font-size: 20px;
+            text-align: center;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <img src="logo.png" alt="Company Logo">
+            <h1>Safety Stop Card</h1>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date">
+        </div>
+
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="time" id="time">
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="Enter location">
+        </div>
+
+        <div class="form-group">
+            <label for="observer">Observer:</label>
+            <input type="text" id="observer" placeholder="Observer name">
+        </div>
+
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" id="position" placeholder="Observer position">
+        </div>
+
+        <div class="form-group">
+            <label>Observation:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="unsafe-actions"> Unsafe Actions</label>
+                <label><input type="checkbox" id="unsafe-conditions"> Unsafe Conditions</label>
+                <label><input type="checkbox" id="safe-actions"> Safe Actions</label>
+                <label><input type="checkbox" id="safe-conditions"> Safe Conditions</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" placeholder="Enter description..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="immediate-action">Immediate Action:</label>
+            <textarea id="immediate-action" placeholder="Enter immediate action..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="recommendations">Further Action/Recommendation for Improvement:</label>
+            <textarea id="recommendations" placeholder="Enter recommendations..."></textarea>
+        </div>
+
+        <button class="btn" onclick="saveToPDF()">Save to PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        function saveToPDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            pdf.setFontSize(16);
+            pdf.text("Safety Stop Card", 105, 30, { align: "center" });
+
+            const img = new Image();
+            img.src = 'logo.png';
+            pdf.addImage(img, 'PNG', 80, 10, 50, 15);
+
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+            const location = document.getElementById("location").value;
+            const observer = document.getElementById("observer").value;
+            const position = document.getElementById("position").value;
+
+            const description = document.getElementById("description").value;
+            const immediateAction = document.getElementById("immediate-action").value;
+            const recommendations = document.getElementById("recommendations").value;
+
+            const unsafeActions = document.getElementById("unsafe-actions").checked;
+            const unsafeConditions = document.getElementById("unsafe-conditions").checked;
+            const safeActions = document.getElementById("safe-actions").checked;
+            const safeConditions = document.getElementById("safe-conditions").checked;
+
+            pdf.text(`Date: ${date}`, 10, 50);
+            pdf.text(`Time: ${time}`, 10, 60);
+            pdf.text(`Location: ${location}`, 10, 70);
+            pdf.text(`Observer: ${observer}`, 10, 80);
+            pdf.text(`Position: ${position}`, 10, 90);
+
+            pdf.text("Observation:", 10, 100);
+            if (unsafeActions) pdf.text("- Unsafe Actions", 20, 110);
+            if (unsafeConditions) pdf.text("- Unsafe Conditions", 20, 120);
+            if (safeActions) pdf.text("- Safe Actions", 20, 130);
+            if (safeConditions) pdf.text("- Safe Conditions", 20, 140);
+
+            pdf.text("Description:", 10, 150);
+            pdf.text(description, 20, 160);
+
+            pdf.text("Immediate Action:", 10, 180);
+            pdf.text(immediateAction, 20, 190);
+
+            pdf.text("Recommendations:", 10, 210);
+            pdf.text(recommendations, 20, 220);
+
+            pdf.save("Safety_Stop_Card.pdf");
+        }
+    </script>
+</body>
+</html>
